@@ -3,5 +3,9 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/roboRIO"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CommonChickenRuntimeEngine"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/DeploymentEngine"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Emulator"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/PoultryInspector"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
