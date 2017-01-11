@@ -1,0 +1,14 @@
+Logging began at Wed Jan 11 12:41:47 PST 2017 [0]
+[13 FINE] (ConnectionReceiverThread.java:58) About to listen on 80
+[13 FINE] (ConnectionReceiverThread.java:58) About to listen on 1540
+[17 WARNING] (ConnectionReceiverThread.java:64) Failed to bind to port 80.
+[513 INFO] (DeviceListMain.java:70) Starting application: org.team1540.chewbawka.Robot
+[569 INFO] (CANTalonDevice.java:69) Changed main sensor on 0 to Encoder
+[575 INFO] (CANTalonDevice.java:69) Changed main sensor on 1 to Encoder
+[580 INFO] (CANTalonDevice.java:249) CAN Talon SRX 0: Encoder Codes per Revolution: 1875.0
+[591 INFO] (CANTalonDevice.java:69) Changed main sensor on 2 to Encoder
+[591 INFO] (CANTalonDevice.java:249) CAN Talon SRX 0: Encoder Codes per Revolution: 1875.0
+[594 INFO] (DeviceListMain.java:73) Hello, org.team1540.chewbawka.Robot!
+Logging continues at Wed Jan 11 12:41:57 PST 2017
+Logging continues at Wed Jan 11 12:42:07 PST 2017
+Logging continues at Wed Jan 11 12:42:17 PST 2017

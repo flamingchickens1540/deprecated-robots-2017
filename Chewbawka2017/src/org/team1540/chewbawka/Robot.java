@@ -27,19 +27,38 @@ public class Robot implements FRCApplication {
     @Override
     public void setupRobot() throws ExtendedMotorFailureException {
         
+    	// shooter motors
     	TalonExtendedMotor motor0 = FRC.talonCAN(0);
+    	TalonExtendedMotor motor1 = FRC.talonCAN(1);
+    	motor1.modGeneralConfig().activateFollowerMode(motor0);
+    	motor0.modGeneralConfig().configureReversed(false, false);
     	motor0.modEncoder().configureEncoderCodesPerRev(125 * 15);
     	motor0.modGeneralConfig().configureMaximumOutputVoltage(12.0f, -12.0f);
     	
-    	FloatCell speed = new FloatCell();
-    	speed.send(motor0.asMode(OutputControlMode.SPEED_FIXED));
+    	FloatCell shooterSpeed = new FloatCell();
+    	shooterSpeed.send(motor0.asMode(OutputControlMode.SPEED_FIXED));
     	
-    	Cluck.publish("P", motor0.modPID().getP());
-    	Cluck.publish("I", motor0.modPID().getI());
-    	Cluck.publish("D", motor0.modPID().getD());
-    	Cluck.publish("F", motor0.modPID().getF());
-    	Cluck.publish("Speed", speed);
-    	Cluck.publish("Actual Speed", motor0.modEncoder().getEncoderVelocity());
+    	Cluck.publish("Shooter P", motor0.modPID().getP());
+    	Cluck.publish("Shooter I", motor0.modPID().getI());
+    	Cluck.publish("Shooter D", motor0.modPID().getD());
+    	Cluck.publish("Shooter F", motor0.modPID().getF());
+    	Cluck.publish("Shooter Speed", shooterSpeed);
+    	Cluck.publish("Shooter Actual Speed", motor0.modEncoder().getEncoderVelocity());
+    	
+    	// belt motor
+    	TalonExtendedMotor motor2 = FRC.talonCAN(2);
+    	motor0.modEncoder().configureEncoderCodesPerRev(125 * 15);
+    	motor0.modGeneralConfig().configureMaximumOutputVoltage(12.0f, -12.0f);
+    	
+    	FloatCell beltSpeed = new FloatCell();
+    	beltSpeed.send(motor2.asMode(OutputControlMode.SPEED_FIXED));
+    	
+    	Cluck.publish("Belt P", motor2.modPID().getP());
+    	Cluck.publish("Belt I", motor2.modPID().getI());
+    	Cluck.publish("Belt D", motor2.modPID().getD());
+    	Cluck.publish("Belt F", motor2.modPID().getF());
+    	Cluck.publish("Belt Speed", beltSpeed);
+    	Cluck.publish("Belt Actual Speed", motor2.modEncoder().getEncoderVelocity());
     	
     }
 }
