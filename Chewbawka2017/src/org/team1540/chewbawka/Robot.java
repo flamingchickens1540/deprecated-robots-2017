@@ -20,6 +20,13 @@ public class Robot implements FRCApplication {
 
     @Override
     public void setupRobot() {
-        // Robot setup code goes here.
+        Climber.setup();
+        DriveTrain.setup();
+        GearSlider.setup();
+        Hopper.setup();
+        Intake.setup();
+        Shooter.setup();
+        
+        Autonomous.setup();
     }
 }
