@@ -7,6 +7,9 @@ import ccre.drivers.ctre.talon.TalonExtendedMotor;
 import ccre.frc.FRC;
 
 public class Shooter {
+	static TalonExtendedMotor shooterBelt = FRC.talonCAN(7);
+	static TalonExtendedMotor shooterIntake = FRC.talonCAN(8);
+	static TalonExtendedMotor hopperAgitator = FRC.talonCAN(9);
 
 	private static EventOutput split(BooleanInput cond, EventOutput t, EventOutput f) {
 		return () -> {
@@ -37,7 +40,7 @@ public class Shooter {
 				flywheelCompensateVelocity); // compensate
 
 		// Set the speed of the intake
-		FloatInput intakeShootingSpeed = Robot.mainTuning.getFloat("Shooter Intake Speed", .5f);
+		FloatInput intakeShootingSpeed = Robot.mainTuning.getFloat("Shooter Intake Speed", 1f);
 
 		FloatInput intakeSpeed = shooterStates.selectByState(
 				FloatInput.zero, // passive
@@ -52,8 +55,8 @@ public class Shooter {
 		fireButton.onRelease().send(cancel.eventSet(true));
 
 		// Setup flywheel PID controller
-		TalonExtendedMotor flywheelRight = FRC.talonCAN(11);
-		TalonExtendedMotor flywheelLeft = FRC.talonCAN(10);
+		TalonExtendedMotor flywheelRight = FRC.talonCAN(10);
+		TalonExtendedMotor flywheelLeft = FRC.talonCAN(11);
 		flywheelLeft.modGeneralConfig().configureReversed(false, false);
 		flywheelLeft.modGeneralConfig().activateFollowerMode(flywheelRight);
 
@@ -77,7 +80,13 @@ public class Shooter {
 		shooterStates.setStateWhen("passive", FRC.startDisabled.or(FRC.startTele).or(FRC.startAuto).or(FRC.startTest));
 
 		// Send intake speeds
-
+		FloatInput shooterBeltConstant = Robot.mainTuning.getFloat("Shooter Belt Constant", .5f);
+		FloatInput shooterIntakeConstant = Robot.mainTuning.getFloat("Shooter Intake Constant", .5f);
+		FloatInput hopperAgitatorConstant = Robot.mainTuning.getFloat("Shooter Agitator Constant", .5f);
+		
+		intakeSpeed.multipliedBy(shooterBeltConstant).send(shooterBelt.simpleControl());
+		intakeSpeed.multipliedBy(shooterIntakeConstant).send(shooterIntake.simpleControl());
+		intakeSpeed.multipliedBy(hopperAgitatorConstant).send(hopperAgitator.simpleControl());
 
 		// Publish
 		Cluck.publish("flywheelTargetVelocity", flywheelTargetVelocity);
