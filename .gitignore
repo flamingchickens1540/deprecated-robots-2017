@@ -12,8 +12,6 @@
 hs_err_pid*
 
 logs*
-launches/
-bin/
 .settings/
 
 bin
