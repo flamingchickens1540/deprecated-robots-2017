@@ -84,11 +84,11 @@ public class Shooter {
 		// Send intake speeds
 		FloatInput shooterBeltConstant = Robot.mainTuning.getFloat("Shooter Belt Constant", .5f);
 		FloatInput shooterIntakeConstant = Robot.mainTuning.getFloat("Shooter Intake Constant", .5f);
-		FloatInput hopperAgitatorConstant = Robot.mainTuning.getFloat("Shooter Agitator Constant", .5f);
+		FloatInput hopperAgitatorConstant = Robot.mainTuning.getFloat("Shooter Agitator Constant", 1f);
 		
-		intakeSpeed.multipliedBy(shooterBeltConstant).send(shooterBelt.simpleControl());
-		intakeSpeed.multipliedBy(shooterIntakeConstant).send(shooterIntake.simpleControl());
-		intakeSpeed.multipliedBy(hopperAgitatorConstant).send(hopperAgitator.simpleControl());
+		intakeSpeed.withRamping(.02f, FRC.constantPeriodic).multipliedBy(shooterBeltConstant).send(shooterBelt.simpleControl());
+		intakeSpeed.withRamping(.02f, FRC.constantPeriodic).multipliedBy(shooterIntakeConstant).send(shooterIntake.simpleControl());
+		intakeSpeed.withRamping(.02f, FRC.constantPeriodic).multipliedBy(hopperAgitatorConstant).send(hopperAgitator.simpleControl());
 
 		// Publish
 		Cluck.publish("flywheelTargetVelocity", flywheelTargetVelocity);
