@@ -33,13 +33,15 @@ public class PIDTalon {
 
 		FloatInput allowedVariance = Robot.mainTuning.getFloat(name + " Allowed Variance", 500f);
 		isUpToSpeed = velocity.atLeast(targetSpeed).and(velocity.atMost(targetSpeed.minus(allowedVariance.absolute())));
-		Cluck.publish(name + " At Speed", isUpToSpeed);
+		Cluck.publish(name + " Is Up To Speed", isUpToSpeed);
 
 
 		Cluck.publish(name + " PID P", tem.modPID().getP());
 		Cluck.publish(name + " PID I", tem.modPID().getI());
 		Cluck.publish(name + " PID D", tem.modPID().getD());
-		Cluck.publish(name + " speed", speed);
+		Cluck.publish(name + " PID F", tem.modPID().getF());
+        Cluck.publish(name + " PID I Bounds", tem.modPID().getIntegralBounds());
+        Cluck.publish(name + " PID I Accum", tem.modPID().getIAccum());
 	}
 
 	public void setup() throws ExtendedMotorFailureException {
