@@ -7,9 +7,12 @@ import ccre.drivers.ctre.talon.TalonExtendedMotor;
 import ccre.frc.FRC;
 
 public class Shooter {
-	static TalonExtendedMotor shooterBelt = FRC.talonCAN(7);
-	static TalonExtendedMotor shooterIntake = FRC.talonCAN(8);
-	static TalonExtendedMotor hopperAgitator = FRC.talonCAN(9);
+	private static final TalonExtendedMotor shooterBelt = FRC.talonCAN(7);
+	private static final TalonExtendedMotor shooterIntake = FRC.talonCAN(8);
+	private static final TalonExtendedMotor hopperAgitator = FRC.talonCAN(9);
+	
+	private static final BooleanInput fireButton = Robot.controlBinding.addBoolean("Shooter Fire");
+	private static final BooleanInput cancelButton = Robot.controlBinding.addBoolean("Shooter eStop");
 
 	private static EventOutput split(BooleanInput cond, EventOutput t, EventOutput f) {
 		return () -> {
@@ -49,8 +52,7 @@ public class Shooter {
 				FloatInput.zero); // compensate
 
 		// Control bindings
-		BooleanInput fireButton = Robot.controlBinding.addBoolean("Shooter Fire");
-		BooleanInput cancelButton = Robot.controlBinding.addBoolean("Shooter eStop");
+		
 		BooleanCell cancel = new BooleanCell(false);
 		fireButton.onRelease().send(cancel.eventSet(true));
 
