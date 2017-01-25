@@ -14,15 +14,6 @@ public class Shooter {
 	private static final BooleanInput fireButton = Robot.controlBinding.addBoolean("Shooter Fire");
 	private static final BooleanInput cancelButton = Robot.controlBinding.addBoolean("Shooter eStop");
 
-	private static EventOutput split(BooleanInput cond, EventOutput t, EventOutput f) {
-		return () -> {
-			if (cond.get()) {
-				t.event();
-			} else {
-				f.event();
-			}
-		};
-	}
 	public static void setup() throws ExtendedMotorFailureException {
 
 		// State machine for setting various motor speeds and the target flywheel velocity
