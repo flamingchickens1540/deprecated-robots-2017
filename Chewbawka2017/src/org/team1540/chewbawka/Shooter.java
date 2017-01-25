@@ -92,6 +92,7 @@ public class Shooter {
 
 		// Publish
 		Cluck.publish("flywheelTargetVelocity", flywheelTargetVelocity);
-		Cluck.publish("intakeTargetSpeed", intakeSpeed);
+		Cluck.publish("shooterBeltTargetVelocity", beltTargetVelocity);
+		Cluck.publish("intakeSpeed", intakeSpeed);
 	}
 }
