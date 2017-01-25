@@ -7,7 +7,7 @@ import ccre.frc.FRC;
 
 public class Intake {
 	
-	private static final TalonExtendedMotor floorIntakeTEM = FRC.talonCAN(12);
+	private static final TalonExtendedMotor floorIntakeTEM = FRC.talonCAN(10);
 	
 	private static final BooleanInput floorIntakeButton = Robot.controlBinding.addBoolean("Toggle Floor Intake");
 	

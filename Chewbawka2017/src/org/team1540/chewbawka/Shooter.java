@@ -7,8 +7,8 @@ import ccre.drivers.ctre.talon.TalonExtendedMotor;
 import ccre.frc.FRC;
 
 public class Shooter {
-	private static final TalonExtendedMotor flywheelLeft = FRC.talonCAN(10);
-	private static final TalonExtendedMotor flywheelRight = FRC.talonCAN(11);
+	private static final TalonExtendedMotor flywheelLeft = FRC.talonCAN(11);
+	private static final TalonExtendedMotor flywheelRight = FRC.talonCAN(12);
 	
 	private static final TalonExtendedMotor shooterBelt = FRC.talonCAN(13);
 	private static final TalonExtendedMotor shooterFrontConveyor = FRC.talonCAN(14);
