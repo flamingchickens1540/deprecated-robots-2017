@@ -16,7 +16,6 @@ public class Shooter {
 	private static final TalonExtendedMotor shooterFunnelingRollerRight = FRC.talonCAN(16);
 
 	private static final BooleanInput fireButton = Robot.controlBinding.addBoolean("Shooter Fire");
-	private static final BooleanInput cancelButton = Robot.controlBinding.addBoolean("Shooter eStop");
 
 	public static void setup() throws ExtendedMotorFailureException {
 
