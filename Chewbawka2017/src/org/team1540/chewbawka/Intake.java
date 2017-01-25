@@ -7,9 +7,9 @@ import ccre.frc.FRC;
 
 public class Intake {
 	
-	private static final TalonExtendedMotor intakeTEM = FRC.talonCAN(12);
+	private static final TalonExtendedMotor floorIntakeTEM = FRC.talonCAN(12);
 	
-	private static final BooleanInput intakeButton = Robot.controlBinding.addBoolean("Toggle Intake");
+	private static final BooleanInput floorIntakeButton = Robot.controlBinding.addBoolean("Toggle Floor Intake");
 	
 	// Create a boolean cell that switches the intake
 	private static final BooleanCell intake = new BooleanCell(false);
@@ -17,17 +17,17 @@ public class Intake {
 	public static void setup() throws ExtendedMotorFailureException {
 		
 		// Make a FloatOutput that controls the intake speed
-		FloatOutput intakeMotor = intakeTEM.simpleControl();
+		FloatOutput floorIntakeMotor = floorIntakeTEM.simpleControl().addRamping(.02f, FRC.constantPeriodic);
 		
 		// Set the speed to zero when enabling
 		intake.setWhen(false, FRC.startDisabled.or(FRC.startTele).or(FRC.startAuto).or(FRC.startTest));
 		
 		// Setup intake logic
-		FloatInput intakeSpeed = Robot.mainTuning.getFloat("Main Intake Speed", 1f);
+		FloatInput floorIntakeSpeed = Robot.mainTuning.getFloat("Floor Intake Speed", 1f);
 		
-		intake.toFloat(0f, intakeSpeed).send(intakeMotor);
+		intake.toFloat(0f, floorIntakeSpeed).send(floorIntakeMotor);
 
-		intakeButton.onPress(intake.eventToggle());
+		floorIntakeButton.onPress(intake.eventToggle());
 		
 	}
 }
