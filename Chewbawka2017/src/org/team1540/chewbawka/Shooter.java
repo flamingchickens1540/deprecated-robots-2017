@@ -59,7 +59,7 @@ public class Shooter {
 
 		// Setup flywheel PID controller
 		
-		flywheelLeft.modGeneralConfig().configureReversed(false, false);
+		flywheelLeft.modGeneralConfig().configureReversed(true, true);
 		flywheelLeft.modGeneralConfig().activateFollowerMode(flywheelRight);
 
 		PIDTalon flywheelTalon = new PIDTalon(flywheelRight, "Shooter Flywheel", flywheelTargetVelocity);
