@@ -11,11 +11,6 @@ public class DriveTrain {
 	public static final TalonExtendedMotor[] rightCANs = new TalonExtendedMotor[] { FRC.talonCAN(4), FRC.talonCAN(5), FRC.talonCAN(6) };
 	public static final TalonExtendedMotor[] leftCANs = new TalonExtendedMotor[] { FRC.talonCAN(1), FRC.talonCAN(2), FRC.talonCAN(3) };
 
-	private static final FloatInput leftDriveControls = Robot.controlBinding.addFloat("Drive Left Axis").deadzone(0.2f);
-	private static final FloatInput rightDriveControls = Robot.controlBinding.addFloat("Drive Right Axis").deadzone(0.2f);
-	private static final FloatInput extendedForwards = Robot.controlBinding.addFloat("Drive Forwards").deadzone(0.2f);
-	private static final FloatInput extendedBackwards = Robot.controlBinding.addFloat("Drive Backwards").deadzone(0.2f);
-	
 	static FloatInput driveRampingConstant = Robot.mainTuning.getFloat("Drive Ramping Constant", .02f);
 
 	public static void setup() throws ExtendedMotorFailureException {
@@ -34,10 +29,10 @@ public class DriveTrain {
 		leftMotors.setWhen(0, FRC.startDisabled.or(FRC.startTele).or(FRC.startAuto).or(FRC.startTest));
 
 		// Send some stuff
-		FloatInput extended = extendedForwards.minus(extendedBackwards);
+		FloatInput extended = ControlBindings.extendedForwards.minus(ControlBindings.extendedBackwards);
 
-		Drive.extendedTank(leftDriveControls, 
-				rightDriveControls, 
+		Drive.extendedTank(ControlBindings.leftDriveControls, 
+				ControlBindings.rightDriveControls, 
 				extended, 
 				leftMotors.addRamping(driveRampingConstant.get(), FRC.constantPeriodic), 
 				rightMotors.addRamping(driveRampingConstant.get(), FRC.constantPeriodic));

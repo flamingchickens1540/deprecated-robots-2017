@@ -15,7 +15,7 @@ public class Shooter {
 	private static final TalonExtendedMotor shooterFunnelingRollerLeft = FRC.talonCAN(15);
 	private static final TalonExtendedMotor shooterFunnelingRollerRight = FRC.talonCAN(16);
 
-	private static final BooleanInput fireButton = Robot.controlBinding.addBoolean("Shooter Fire");
+
 
 	public static void setup() throws ExtendedMotorFailureException {
 
@@ -55,7 +55,7 @@ public class Shooter {
 				FloatInput.zero); // compensate
 
 		// Control bindings
-		fireButton.onRelease().send(shooterStates.getStateSetEvent("passive"));
+		ControlBindings.fireButton.onRelease().send(shooterStates.getStateSetEvent("passive"));
 
 		// Setup flywheel PID controller
 		
@@ -73,7 +73,7 @@ public class Shooter {
 		FloatInput shooterSlowThreshold = Robot.mainTuning.getFloat("Shooter Slowdown Threshold", 2100f);
 
 		// Start switching logic
-		fireButton.onPress().and(shooterStates.getIsState("passive")).send(shooterStates.getStateSetEvent("spinup"));
+		ControlBindings.fireButton.onPress().and(shooterStates.getIsState("passive")).send(shooterStates.getStateSetEvent("spinup"));
 		flywheelTalon.isUpToSpeed.onPress().and(shooterStates.getIsState("spinup")).send(shooterStates.getStateSetEvent("firing"));
 		flywheelTalon.velocity.atMost(shooterSlowThreshold).onPress().and(shooterStates.getIsState("firing")).send(shooterStates.getStateSetEvent("compensate"));
 		flywheelTalon.velocity.atLeast(flywheelShootingVelocity).onPress().and(shooterStates.getIsState("compensate")).send(shooterStates.getStateSetEvent("firing"));

@@ -9,7 +9,7 @@ public class Intake {
 	
 	private static final TalonExtendedMotor floorIntakeTEM = FRC.talonCAN(10);
 	
-	private static final BooleanInput floorIntakeButton = Robot.controlBinding.addBoolean("Toggle Floor Intake");
+	
 	
 	// Create a boolean cell that switches the intake
 	private static final BooleanCell intake = new BooleanCell(false);
@@ -27,7 +27,7 @@ public class Intake {
 		
 		intake.toFloat(0f, floorIntakeSpeed).send(floorIntakeMotor);
 
-		floorIntakeButton.onPress(intake.eventToggle());
+		ControlBindings.floorIntakeButton.onPress(intake.eventToggle());
 		
 	}
 }
