@@ -17,5 +17,8 @@ public class ControlBindings {
 	
 	// Intake
 	public static final BooleanInput floorIntakeButton = Robot.controlBinding.addBoolean("Toggle Floor Intake");
+	
+	// Climber
+	public static final BooleanInput climberButton = Robot.controlBinding.addBoolean("Toggle Climber");
 
 }
