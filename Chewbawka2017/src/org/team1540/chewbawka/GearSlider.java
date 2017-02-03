@@ -6,6 +6,7 @@ import ccre.channel.EventCell;
 import ccre.channel.EventOutput;
 import ccre.channel.FloatCell;
 import ccre.channel.FloatIO;
+import ccre.channel.FloatInput;
 import ccre.channel.FloatOutput;
 import ccre.cluck.Cluck;
 import ccre.ctrl.ExtendedMotor.OutputControlMode;
@@ -33,37 +34,32 @@ public class GearSlider {
 		FloatOutput gearSliderSpeedControl = gearSliderMotor.asMode(OutputControlMode.SPEED_FIXED);
 		FloatOutput gearSliderPositionControl = gearSliderMotor.asMode(OutputControlMode.POSITION_FIXED);
 		FloatIO gearSliderPosition = gearSliderMotor.modEncoder().getEncoderPosition();
+		FloatInput gearSliderVelocity = gearSliderMotor.modEncoder().getEncoderVelocity();
 		
 		FloatCell slow = new FloatCell(2f);
-		BooleanInput tooSlow = gearSliderMotor.modEncoder().getEncoderVelocity().absolute().atMost(slow);
+		BooleanInput tooSlow = gearSliderVelocity.absolute().atMost(slow);
 		BooleanCell backward1 = new BooleanCell();
 		BooleanCell forward = new BooleanCell();
 		BooleanCell backward2 = new BooleanCell();
 		FloatCell slidingDistance = new FloatCell();
 		BooleanCell calibrated = new BooleanCell();
+		FloatCell positionError = new FloatCell(10f);
+		BooleanInput atMiddle = gearSliderPosition.inRange(slidingDistance.dividedBy(2f).minus(positionError), 
+				slidingDistance.dividedBy(2f).plus(positionError));
 		
-		EventCell calibrate = new EventCell();
-		EventOutput resetEncoder = gearSliderMotor.modEncoder().getEncoderPosition().eventSet(0f);
-		EventOutput sliderBackward = gearSliderSpeedControl.eventSet(calibratingSpeed.negated()).combine(
-				() -> {backward1.set(true); forward.set(false);});
+		EventOutput calibrate = gearSliderSpeedControl.eventSet(calibratingSpeed.negated()).combine(
+				() -> {backward1.set(true); forward.set(false); backward2.set(false);});
 		EventOutput sliderForward = gearSliderSpeedControl.eventSet(calibratingSpeed).combine(
 				() -> {forward.set(true); backward1.set(false);});
-		
+		EventOutput sliderBackward2 = gearSliderSpeedControl.eventSet(calibratingSpeed.negated()).combine(
+				() -> {forward.set(false); backward2.set(true);});
+		EventOutput resetEncoder = gearSliderPosition.eventSet(0f);
 		EventOutput recordDistance = slidingDistance.eventSet(gearSliderPosition);
 		EventOutput sliderStop = gearSliderSpeedControl.eventSet(0f);
 		
-		calibrate.send(sliderBackward);
 		tooSlow.onPress().and(backward1).send(resetEncoder.combine(sliderForward));
-		tooSlow.onPress().and(forward).send(recordDistance);
-		/* 
-		 * backward
-		 * until going too slowly
-		 * then reset encoder, go forward
-		 * until going too slowly
-		 * then record encoder position (= sliding distance), go backward
-		 * until halfway
-		 * then stop
-		 */
+		tooSlow.onPress().and(forward).send(recordDistance.combine(sliderBackward2));
+		atMiddle.onPress().and(backward2).send(sliderStop);
 		
 		Cluck.publish("Gear Servo Left Output", servoLeft);
 		Cluck.publish("Gear Servo Right Output", servoRight);
@@ -73,6 +69,7 @@ public class GearSlider {
 		Cluck.publish("Gear Slider Speed Control", gearSliderSpeedControl);
 		Cluck.publish("Gear Slider Position Control", gearSliderPositionControl);
 		Cluck.publish("Gear Slider Too Slow Speed", slow);
+		Cluck.publish("Gear Slider Position Error", positionError);
 		
 	}
 	
