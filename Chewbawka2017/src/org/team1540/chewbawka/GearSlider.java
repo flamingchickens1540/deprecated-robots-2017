@@ -23,16 +23,19 @@ public class GearSlider {
 		
 		// --- This is just for testing purposes, and will be changed to use vision. --- 
 		
-		// Make a FloatOutput that controls the climber speed
+		// Make a FloatOutput that controls the gear slider speed
 		FloatOutput gearSlider = gearSliderTEM.simpleControl().addRamping(.02f, FRC.constantPeriodic);
 		
-		// Set the speed to zero when enabling
+		FloatInput gearSliderSpeed = Robot.mainTuning.getFloat("Gear Slider Constant", 1f);
+		
+		ControlBindings.gearSliderControls.multipliedBy(gearSliderSpeed).send(gearSlider);
+		
+		// Close the gear lock when enabling
 		gearLock.setWhen(true, FRC.startDisabled.or(FRC.startTele).or(FRC.startAuto).or(FRC.startTest));
 		
 		// Setup climber logic
-		FloatInput gearSliderSpeed = Robot.mainTuning.getFloat("Gear Slider Speed", 1f);
-		
-		gearLock.onPress(gearServoLeft.eventSet(25));
+		gearLock.onPress(gearServos.eventSet(40));
+		gearLock.onRelease(gearServos.eventSet(80));
 
 		ControlBindings.gearLockButton.onPress(gearLock.eventToggle());
 		
