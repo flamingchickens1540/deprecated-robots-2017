@@ -59,6 +59,10 @@ public class GearSlider {
 		gearSliderStates.setStateWhen("calibrating 0 end", calibrate);
 		gearSliderStates.setStateWhen("calibrating distance", 
 				tooSlow.onPress().and(gearSliderStates.getIsState("calibrating 0 end")));
+		gearSliderStates.setStateWhen("returning to center", 
+				tooSlow.onPress().and(gearSliderStates.getIsState("calibrating distance")));
+		gearSliderStates.setStateWhen("calibrated", 
+				atMiddle.onPress().and(gearSliderStates.getIsState("returning to center")));
 		
 		calibrate.on(FRC.startTele);
 		gearSliderSpeedControl.setWhen(calibrationSpeed.negated(), 
