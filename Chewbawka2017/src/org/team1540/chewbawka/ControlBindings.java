@@ -21,6 +21,8 @@ public class ControlBindings {
 	// Hopper
 	
 	// GearSlider
+	// (for testing)
+	public static final BooleanInput gearLockButton = Robot.controlBinding.addBoolean("Toggle Gear Lock");
 	
 	// Climber
 	public static final BooleanInput climberButton = Robot.controlBinding.addBoolean("Toggle Climber");
