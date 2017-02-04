@@ -61,6 +61,14 @@ public class GearSlider {
 		tooSlow.onPress().and(forward).send(recordDistance.combine(sliderBackward2));
 		atMiddle.onPress().and(backward2).send(sliderStop);
 		
+		BooleanInput sliderTooFarF = gearSliderPosition.atLeast(slidingDistance);
+		BooleanInput sliderTooFarB = gearSliderPosition.atMost(0f);
+		sliderTooFarF.onPress(gearSliderPositionControl.eventSet(slidingDistance));
+		sliderTooFarB.onPress(gearSliderPositionControl.eventSet(0f));
+		FloatCell slidingControlScaling = new FloatCell(1f);
+		ControlBindings.gearSliderControls.onChange().send(gearSliderPositionControl.eventSet(
+				gearSliderPosition.plus(ControlBindings.gearSliderControls.multipliedBy(slidingControlScaling))));
+		
 		Cluck.publish("Gear Servo Left Output", servoLeft);
 		Cluck.publish("Gear Servo Right Output", servoRight);
 		Cluck.publish("Gear Depositing", depositingGear);
@@ -70,6 +78,7 @@ public class GearSlider {
 		Cluck.publish("Gear Slider Position Control", gearSliderPositionControl);
 		Cluck.publish("Gear Slider Too Slow Speed", slow);
 		Cluck.publish("Gear Slider Position Error", positionError);
+		Cluck.publish("Gear Slider Control Scaling", slidingControlScaling);
 		
 	}
 	
