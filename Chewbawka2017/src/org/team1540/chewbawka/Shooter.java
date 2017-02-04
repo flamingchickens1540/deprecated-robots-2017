@@ -55,7 +55,7 @@ public class Shooter {
 				FloatInput.zero); // compensate
 
 		// Control bindings
-		ControlBindings.fireButton.onRelease().send(shooterStates.getStateSetEvent("passive"));
+		
 
 		// Setup flywheel PID controller
 		
@@ -75,14 +75,15 @@ public class Shooter {
 		// -Start switching logic-
 		
 		// When the fire button is pressed, and the shooter is passive, then start spinning up the flywheel
-		ControlBindings.fireButton.onPress().and(shooterStates.getIsState("passive")).send(shooterStates.getStateSetEvent("spinup"));
+		ControlBindings.fireButton.onPress().and(FRC.inTeleopMode()).and(shooterStates.getIsState("passive")).send(shooterStates.getStateSetEvent("spinup"));
 		// Once the flywheel PID is up to speed, start the shooter intake
-		flywheelTalon.isUpToSpeed.onPress().and(shooterStates.getIsState("spinup")).send(shooterStates.getStateSetEvent("firing"));
+		flywheelTalon.velocity.atLeast(flywheelShootingVelocity).onPress().and(shooterStates.getIsState("spinup")).send(shooterStates.getStateSetEvent("firing"));
 		// When the flywheel slows down as it shoots, set the speed to full to compensate
 		flywheelTalon.velocity.atMost(shooterSlowThreshold).onPress().and(shooterStates.getIsState("firing")).send(shooterStates.getStateSetEvent("compensate"));
 		// After the flywheel velocity has been compensated, set the mode back to firing
 		flywheelTalon.velocity.atLeast(flywheelShootingVelocity).onPress().and(shooterStates.getIsState("compensate")).send(shooterStates.getStateSetEvent("firing"));
-
+		
+		ControlBindings.fireButton.onRelease().send(shooterStates.getStateSetEvent("passive"));
 		// Reset the state machine when switching modes
 		shooterStates.setStateWhen("passive", FRC.startDisabled.or(FRC.startTele).or(FRC.startAuto).or(FRC.startTest));
 
