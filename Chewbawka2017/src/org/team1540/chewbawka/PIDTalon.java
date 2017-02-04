@@ -17,10 +17,12 @@ public class PIDTalon {
 	public final FloatInput velocity, speed;
 	public final BooleanInput isStopped, isUpToSpeed;
 	private final FloatInput targetSpeed;
+	private final int priority;
 
-	public PIDTalon(TalonExtendedMotor tem, String name, FloatInput targetSpeed) {
+	public PIDTalon(TalonExtendedMotor tem, String name, FloatInput targetSpeed, int priority) {
 		this.tem = tem;
 		this.targetSpeed = targetSpeed;
+		this.priority = priority;
 		Cluck.publish(name + " Target", targetSpeed);
 
 		velocity = tem.modEncoder().getEncoderVelocity();
@@ -43,10 +45,29 @@ public class PIDTalon {
         Cluck.publish(name + " PID I Bounds", tem.modPID().getIntegralBounds());
         Cluck.publish(name + " PID I Accum", tem.modPID().getIAccum());
 	}
+	
+	public static BooleanInput getThreeState(BooleanInput forceTrue, BooleanInput forceFalse) {
+        return new DerivedBooleanInput(forceTrue, forceFalse) {
+            private boolean state;
+
+            @Override
+            protected synchronized boolean apply() {
+                if (forceTrue.get()) {
+                    state = true;
+                }
+                if (forceFalse.get()) {
+                    state = false;
+                }
+                return state;
+            }
+        };
+    }
+
 
 	public void setup() throws ExtendedMotorFailureException {
 		FloatInput control = this.targetSpeed;
 		FloatOutput speed = tem.asMode(OutputControlMode.SPEED_FIXED);
+		speed = PowerManager.managePower(this.priority, speed);
 		tem.enable();
 		control.send(speed);
 	}
