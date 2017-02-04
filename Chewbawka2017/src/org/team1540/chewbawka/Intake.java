@@ -17,7 +17,7 @@ public class Intake {
 	public static void setup() throws ExtendedMotorFailureException {
 		
 		// Make a FloatOutput that controls the intake speed
-		FloatOutput floorIntakeMotor = floorIntakeTEM.simpleControl().addRamping(.02f, FRC.constantPeriodic);
+		FloatOutput floorIntakeMotor = PowerManager.managePower(3, floorIntakeTEM.simpleControl().addRamping(.02f, FRC.constantPeriodic));
 		
 		// Set the speed to zero when enabling
 		intake.setWhen(false, FRC.startDisabled.or(FRC.startTele).or(FRC.startAuto).or(FRC.startTest));

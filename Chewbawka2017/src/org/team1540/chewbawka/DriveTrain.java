@@ -16,13 +16,13 @@ public class DriveTrain {
 	public static void setup() throws ExtendedMotorFailureException {
 
 		// Combine right and left motors into FloatOutputs using simple control
-		FloatOutput rightMotors = rightCANs[0].simpleControl()
+		FloatOutput rightMotors = PowerManager.managePower(2, rightCANs[0].simpleControl()
 				.combine(rightCANs[1].simpleControl())
-				.combine(rightCANs[2].simpleControl());
+				.combine(rightCANs[2].simpleControl()));
 		
-		FloatOutput leftMotors = leftCANs[0].simpleControl()
+		FloatOutput leftMotors = PowerManager.managePower(2, leftCANs[0].simpleControl()
 				.combine(leftCANs[1].simpleControl())
-				.combine(leftCANs[2].simpleControl()).negate();
+				.combine(leftCANs[2].simpleControl()).negate());
 
 		// Set the speed to zero when when enabling
 		rightMotors.setWhen(0, FRC.startDisabled.or(FRC.startTele).or(FRC.startAuto).or(FRC.startTest));

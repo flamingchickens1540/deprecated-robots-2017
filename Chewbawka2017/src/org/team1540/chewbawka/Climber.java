@@ -19,7 +19,7 @@ public class Climber {
 	public static void setup() throws ExtendedMotorFailureException {
 		
 		// Make a FloatOutput that controls the climber speed
-		FloatOutput climberMotor = climberTEMleft.simpleControl().combine(climberTEMright.simpleControl()).addRamping(.02f, FRC.constantPeriodic);
+		FloatOutput climberMotor = PowerManager.managePower(6, climberTEMleft.simpleControl().combine(climberTEMright.simpleControl()).addRamping(.02f, FRC.constantPeriodic);
 		
 		// Set the speed to zero when enabling
 		climb.setWhen(false, FRC.startDisabled.or(FRC.startTele).or(FRC.startAuto).or(FRC.startTest));

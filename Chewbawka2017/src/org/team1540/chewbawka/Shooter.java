@@ -61,12 +61,12 @@ public class Shooter {
 		
 		flywheelLeft.modGeneralConfig().configureReversed(true, true);
 		flywheelLeft.modGeneralConfig().activateFollowerMode(flywheelRight);
-
-		PIDTalon flywheelTalon = new PIDTalon(flywheelRight, "Shooter Flywheel", flywheelTargetVelocity);
+ 
+		PIDTalon flywheelTalon = new PIDTalon(flywheelRight, "Shooter Flywheel", flywheelTargetVelocity, 5);
 		flywheelTalon.setup();
 		
 		// Setup belt PID controller 
-		PIDTalon beltTalon = new PIDTalon(shooterBelt, "Shooter Belt", beltTargetVelocity);
+		PIDTalon beltTalon = new PIDTalon(shooterBelt, "Shooter Belt", beltTargetVelocity, 4);
 		beltTalon.setup();
 
 		// Set tunable variables
@@ -91,7 +91,7 @@ public class Shooter {
 		FloatInput shooterFrontConveyorConstant = Robot.mainTuning.getFloat("Shooter Front Conveyor Constant", .5f);
 		FloatInput shooterFunnelingRollerConstant = Robot.mainTuning.getFloat("Shooter Funneling Roller Constant", 1f);
 		
-		FloatOutput shooterFunnelingRoller = shooterFunnelingRollerLeft.simpleControl().combine(shooterFunnelingRollerRight.simpleControl().negate());
+		FloatOutput shooterFunnelingRoller = PowerManager.managePower(3, shooterFunnelingRollerLeft.simpleControl().combine(shooterFunnelingRollerRight.simpleControl().negate()));
 		
 		intakeSpeed.multipliedBy(shooterFrontConveyorConstant).send(shooterFrontConveyor.simpleControl().addRamping(.02f, FRC.constantPeriodic));
 		intakeSpeed.multipliedBy(shooterFunnelingRollerConstant).send(shooterFunnelingRoller.addRamping(.02f, FRC.constantPeriodic));

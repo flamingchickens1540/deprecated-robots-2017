@@ -24,7 +24,7 @@ public class GearSlider {
 		// --- This is just for testing purposes, and will be changed to use vision. --- 
 		
 		// Make a FloatOutput that controls the gear slider speed
-		FloatOutput gearSlider = gearSliderTEM.simpleControl().addRamping(.02f, FRC.constantPeriodic);
+		FloatOutput gearSlider = PowerManager.managePower(2, gearSliderTEM.simpleControl().addRamping(.02f, FRC.constantPeriodic));
 		
 		FloatInput gearSliderSpeed = Robot.mainTuning.getFloat("Gear Slider Constant", 1f);
 		
