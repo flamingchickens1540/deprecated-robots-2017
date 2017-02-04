@@ -25,7 +25,7 @@ public class Climber {
 		climb.setWhen(false, FRC.startDisabled.or(FRC.startTele).or(FRC.startAuto).or(FRC.startTest));
 		
 		// Setup climber logic
-		FloatInput climberSpeed = Robot.mainTuning.getFloat("Climber Speed", 1f);
+		FloatInput climberSpeed = Robot.mainTuning.getFloat("Climber Constant", 1f);
 		
 		climb.toFloat(0f, climberSpeed).send(climberMotor);
 
