@@ -22,6 +22,7 @@ public class ControlBindings {
 	
 	// GearSlider
 	// (for testing)
+	public static final FloatInput gearSliderControls = Robot.controlBinding.addFloat("Gear Slider Axis").deadzone(0.2f);
 	public static final BooleanInput gearLockButton = Robot.controlBinding.addBoolean("Toggle Gear Lock");
 	
 	// Climber
