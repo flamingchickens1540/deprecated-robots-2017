@@ -7,7 +7,7 @@ import ccre.frc.FRC;
 
 public class Intake {
 	
-	private static final TalonExtendedMotor floorIntakeTEM = FRC.talonCAN(18);
+	public static final TalonExtendedMotor floorIntakeTEM = FRC.talonCAN(18);
 	
 	
 	

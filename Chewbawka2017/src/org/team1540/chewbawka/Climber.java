@@ -8,8 +8,8 @@ import ccre.frc.FRC;
 
 public class Climber {
 	
-	private static final TalonExtendedMotor climberTEMleft = FRC.talonCAN(11);
-	private static final TalonExtendedMotor climberTEMright = FRC.talonCAN(13);
+	public static final TalonExtendedMotor climberTEMleft = FRC.talonCAN(11);
+	public static final TalonExtendedMotor climberTEMright = FRC.talonCAN(13);
 	
 	
 	
