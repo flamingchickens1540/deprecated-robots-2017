@@ -8,7 +8,8 @@ import ccre.frc.FRC;
 
 public class Climber {
 	
-	private static final TalonExtendedMotor climberTEM = FRC.talonCAN(10);
+	private static final TalonExtendedMotor climberTEMleft = FRC.talonCAN(11);
+	private static final TalonExtendedMotor climberTEMright = FRC.talonCAN(13);
 	
 	
 	
@@ -18,7 +19,7 @@ public class Climber {
 	public static void setup() throws ExtendedMotorFailureException {
 		
 		// Make a FloatOutput that controls the climber speed
-		FloatOutput climberMotor = climberTEM.simpleControl().addRamping(.02f, FRC.constantPeriodic);
+		FloatOutput climberMotor = climberTEMleft.simpleControl().combine(climberTEMright.simpleControl()).addRamping(.02f, FRC.constantPeriodic);
 		
 		// Set the speed to zero when enabling
 		climb.setWhen(false, FRC.startDisabled.or(FRC.startTele).or(FRC.startAuto).or(FRC.startTest));

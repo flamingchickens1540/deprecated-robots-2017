@@ -7,13 +7,13 @@ import ccre.drivers.ctre.talon.TalonExtendedMotor;
 import ccre.frc.FRC;
 
 public class Shooter {
-	private static final TalonExtendedMotor flywheelLeft = FRC.talonCAN(11);
-	private static final TalonExtendedMotor flywheelRight = FRC.talonCAN(12);
+	private static final TalonExtendedMotor flywheelLeft = FRC.talonCAN(9);
+	private static final TalonExtendedMotor flywheelRight = FRC.talonCAN(7);
 	
-	private static final TalonExtendedMotor shooterBelt = FRC.talonCAN(13);
-	private static final TalonExtendedMotor shooterFrontConveyor = FRC.talonCAN(14);
-	private static final TalonExtendedMotor shooterFunnelingRollerLeft = FRC.talonCAN(15);
-	private static final TalonExtendedMotor shooterFunnelingRollerRight = FRC.talonCAN(16);
+	private static final TalonExtendedMotor shooterBelt = FRC.talonCAN(1);
+	private static final TalonExtendedMotor shooterFrontConveyor = FRC.talonCAN(15);
+	private static final TalonExtendedMotor shooterFunnelingRollerLeft = FRC.talonCAN(10);
+	private static final TalonExtendedMotor shooterFunnelingRollerRight = FRC.talonCAN(12);
 
 
 
@@ -72,10 +72,15 @@ public class Shooter {
 		// Set tunable variables
 		FloatInput shooterSlowThreshold = Robot.mainTuning.getFloat("Shooter Slowdown Threshold", 2100f);
 
-		// Start switching logic
+		// -Start switching logic-
+		
+		// When the fire button is pressed, and the shooter is passive, then start spinning up the flywheel
 		ControlBindings.fireButton.onPress().and(shooterStates.getIsState("passive")).send(shooterStates.getStateSetEvent("spinup"));
+		// Once the flywheel PID is up to speed, start the shooter intake
 		flywheelTalon.isUpToSpeed.onPress().and(shooterStates.getIsState("spinup")).send(shooterStates.getStateSetEvent("firing"));
+		// When the flywheel slows down as it shoots, set the speed to full to compensate
 		flywheelTalon.velocity.atMost(shooterSlowThreshold).onPress().and(shooterStates.getIsState("firing")).send(shooterStates.getStateSetEvent("compensate"));
+		// After the flywheel velocity has been compensated, set the mode back to firing
 		flywheelTalon.velocity.atLeast(flywheelShootingVelocity).onPress().and(shooterStates.getIsState("compensate")).send(shooterStates.getStateSetEvent("firing"));
 
 		// Reset the state machine when switching modes
@@ -90,7 +95,7 @@ public class Shooter {
 		intakeSpeed.multipliedBy(shooterFrontConveyorConstant).send(shooterFrontConveyor.simpleControl().addRamping(.02f, FRC.constantPeriodic));
 		intakeSpeed.multipliedBy(shooterFunnelingRollerConstant).send(shooterFunnelingRoller.addRamping(.02f, FRC.constantPeriodic));
 
-		// Publish
+		// Publish the velocity of the PIDs and the intake speed.
 		Cluck.publish("flywheelTargetVelocity", flywheelTargetVelocity);
 		Cluck.publish("shooterBeltTargetVelocity", beltTargetVelocity);
 		Cluck.publish("intakeSpeed", intakeSpeed);
