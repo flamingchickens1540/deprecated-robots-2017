@@ -12,7 +12,7 @@ public class Intake {
 	
 	
 	// Create a boolean cell that switches the intake
-	private static final BooleanCell intake = new BooleanCell(false);
+	public static final BooleanCell intake = new BooleanCell(false);
     
 	public static void setup() throws ExtendedMotorFailureException {
 		

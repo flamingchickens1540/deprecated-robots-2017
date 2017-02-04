@@ -79,9 +79,11 @@ public class Shooter {
 		// Once the flywheel PID is up to speed, start the shooter intake
 		flywheelTalon.velocity.atLeast(flywheelShootingVelocity).onPress().and(shooterStates.getIsState("spinup")).send(shooterStates.getStateSetEvent("firing"));
 		// When the flywheel slows down as it shoots, set the speed to full to compensate
-		flywheelTalon.velocity.atMost(shooterSlowThreshold).onPress().and(shooterStates.getIsState("firing")).send(shooterStates.getStateSetEvent("compensate"));
+		//flywheelTalon.velocity.atMost(shooterSlowThreshold).onPress().and(shooterStates.getIsState("firing")).send(shooterStates.getStateSetEvent("compensate"));
 		// After the flywheel velocity has been compensated, set the mode back to firing
-		flywheelTalon.velocity.atLeast(flywheelShootingVelocity).onPress().and(shooterStates.getIsState("compensate")).send(shooterStates.getStateSetEvent("firing"));
+		//flywheelTalon.velocity.atLeast(flywheelShootingVelocity).onPress().and(shooterStates.getIsState("compensate")).send(shooterStates.getStateSetEvent("firing"));
+		shooterStates.getIsState("firing").onPress().send(Intake.intake.eventSet(true));
+		shooterStates.getIsState("passive").onPress().send(Intake.intake.eventSet(false));
 		
 		ControlBindings.fireButton.onRelease().send(shooterStates.getStateSetEvent("passive"));
 		// Reset the state machine when switching modes
@@ -94,8 +96,10 @@ public class Shooter {
 		FloatOutput shooterFunnelingRoller = PowerManager.managePower(3, shooterFunnelingRollerLeft.simpleControl().combine(shooterFunnelingRollerRight.simpleControl().negate()));
 		
 		intakeSpeed.multipliedBy(shooterFrontConveyorConstant).send(shooterFrontConveyor.simpleControl().addRamping(.02f, FRC.constantPeriodic));
-		intakeSpeed.multipliedBy(shooterFunnelingRollerConstant).send(shooterFunnelingRoller.addRamping(.02f, FRC.constantPeriodic));
+		intakeSpeed.multipliedBy(shooterFunnelingRollerConstant).send(shooterFunnelingRollerLeft.simpleControl().addRamping(.02f, FRC.constantPeriodic));
+		intakeSpeed.multipliedBy((float) (Math.pow(Math.sin(System.currentTimeMillis()/1000), 2))).send(shooterFunnelingRollerRight.simpleControl());
 
+		
 		// Publish the velocity of the PIDs and the intake speed.
 		Cluck.publish("flywheelTargetVelocity", flywheelTargetVelocity);
 		Cluck.publish("shooterBeltTargetVelocity", beltTargetVelocity);
