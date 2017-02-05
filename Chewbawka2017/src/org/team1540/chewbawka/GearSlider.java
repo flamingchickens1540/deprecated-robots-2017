@@ -1,4 +1,4 @@
-package org.team1540.chewbawka;
+xpackage org.team1540.chewbawka;
 
 import ccre.channel.BooleanCell;
 import ccre.channel.BooleanInput;
@@ -69,7 +69,7 @@ public class GearSlider {
 				gearSliderStates.onEnterState("calibrating 0 end").or(gearSliderStates.onEnterState("returning to center")));
 		gearSliderSpeedControl.setWhen(calibrationSpeed, gearSliderStates.onEnterState("calibrating distance"));
 		gearSliderSpeedControl.setWhen(0f, gearSliderStates.onEnterState("calibrated"));
-		resetEncoder.on(gearSliderStates.onExitState("calibrating 0"));
+		resetEncoder.on(gearSliderStates.onExitState("calibrating 0 end"));
 		recordDistance.on(gearSliderStates.onExitState("calibrating distance"));
 		calibrated.setWhen(true, gearSliderStates.onExitState("calibrating distance"));
 		
