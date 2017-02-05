@@ -38,12 +38,13 @@ public class Deployment {
         if (number == 0) {
             throw new RuntimeException("You need to change your TEAM_NUMBER in RobotTemplate.java!");
         }
-
-        try (DepRoboRIO.RIOShell rshell = DepRoboRIO.discoverAndVerify(number)) {
-            rshell.archiveLogsTo(DepProject.root());
-
-            rshell.downloadAndStart(result);
-        }
+        System.out.println(result.toJar(false).toFile());
+        
+//        try (DepRoboRIO.RIOShell rshell = DepRoboRIO.discoverAndVerify(number)) {
+//            rshell.archiveLogsTo(DepProject.root());
+//
+//            rshell.downloadAndStart(result);
+//        }
     }
 
     /**
