@@ -32,7 +32,6 @@ public class Robot implements FRCApplication {
         Climber.setup();
         DriveTrain.setup();
         GearSlider.setup();
-        Hopper.setup();
         Intake.setup();
         Shooter.setup();
         

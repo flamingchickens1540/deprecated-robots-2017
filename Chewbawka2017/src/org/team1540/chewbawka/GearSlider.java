@@ -1,4 +1,4 @@
-xpackage org.team1540.chewbawka;
+package org.team1540.chewbawka;
 
 import ccre.channel.BooleanCell;
 import ccre.channel.BooleanInput;
