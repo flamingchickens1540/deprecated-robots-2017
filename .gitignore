@@ -12,6 +12,10 @@
 hs_err_pid*
 
 logs*
-launches/
-bin/
 .settings/
+
+bin
+logs-*.tgz
+launches
+eggs
+emulator-logs
