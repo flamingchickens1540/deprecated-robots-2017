@@ -17,7 +17,7 @@ public class Robot implements FRCApplication {
 	public void setupRobot() throws ExtendedMotorFailureException {
 		Climber.setup();
 		DriveTrain.setup();
-		GearSlider.setup();
+		//GearSlider.setup();
 		Hopper.setup();
 		Intake.setup();
 		Shooter.setup();
