@@ -9,13 +9,7 @@ import ccre.log.Logger;
 import ccre.time.Time;
 
 public class Shooter {
-	public static final TalonExtendedMotor flywheelLeft = FRC.talonCAN(9);
-	public static final TalonExtendedMotor flywheelRight = FRC.talonCAN(7);
 	
-	public static final TalonExtendedMotor shooterBelt = FRC.talonCAN(1);
-	public static final TalonExtendedMotor shooterFrontConveyor = FRC.talonCAN(15);
-	public static final TalonExtendedMotor shooterFunnelingRollerLeft = FRC.talonCAN(10);
-	public static final TalonExtendedMotor shooterFunnelingRollerRight = FRC.talonCAN(12);
 
 	public static final FloatCell sinTime = new FloatCell();
 
@@ -67,14 +61,14 @@ public class Shooter {
 
 		// Setup flywheel PID controller
 		
-		flywheelLeft.modGeneralConfig().configureReversed(true, true);
-		flywheelLeft.modGeneralConfig().activateFollowerMode(flywheelRight);
+		TEMotors.flywheelLeft.modGeneralConfig().configureReversed(true, true);
+		TEMotors.flywheelLeft.modGeneralConfig().activateFollowerMode(TEMotors.flywheelRight);
  
-		PIDTalon flywheelTalon = new PIDTalon(flywheelRight, "Shooter Flywheel", flywheelTargetVelocity, 5);
+		PIDTalon flywheelTalon = new PIDTalon(TEMotors.flywheelRight, "Shooter Flywheel", flywheelTargetVelocity, 5);
 		flywheelTalon.setup();
 		
 		// Setup belt PID controller 
-		PIDTalon beltTalon = new PIDTalon(shooterBelt, "Shooter Belt", beltTargetVelocity, 4);
+		PIDTalon beltTalon = new PIDTalon(TEMotors.shooterBelt, "Shooter Belt", beltTargetVelocity, 4);
 		beltTalon.setup();
 
 		// Set tunable variables
@@ -102,9 +96,9 @@ public class Shooter {
 		FloatInput shooterFunnelingRollerConstant = Robot.mainTuning.getFloat("Shooter Funneling Roller Constant", 1f);
 		
 		
-		intakeSpeed.multipliedBy(shooterFrontConveyorConstant).send(shooterFrontConveyor.simpleControl().addRamping(.02f, FRC.constantPeriodic));
-		intakeSpeed.multipliedBy(shooterFunnelingRollerConstant).send(shooterFunnelingRollerLeft.simpleControl().addRamping(.02f, FRC.constantPeriodic));
-		intakeSpeed.multipliedBy(sinTime).multipliedBy(shooterFunnelingRollerConstant).send(shooterFunnelingRollerRight.simpleControl());
+		intakeSpeed.multipliedBy(shooterFrontConveyorConstant).send(TEMotors.shooterFrontConveyor.simpleControl().addRamping(.02f, FRC.constantPeriodic));
+		intakeSpeed.multipliedBy(shooterFunnelingRollerConstant).send(TEMotors.shooterFunnelingRollerLeft.simpleControl().addRamping(.02f, FRC.constantPeriodic));
+		intakeSpeed.multipliedBy(sinTime).multipliedBy(shooterFunnelingRollerConstant).send(TEMotors.shooterFunnelingRollerRight.simpleControl());
 
 		
 		// Publish the velocity of the PIDs and the intake speed.

@@ -8,18 +8,13 @@ import ccre.frc.FRC;
 
 public class Climber {
 	
-	public static final TalonExtendedMotor climberTEMleft = FRC.talonCAN(11);
-	public static final TalonExtendedMotor climberTEMright = FRC.talonCAN(13);
-	
-	
-	
 	// Create a boolean cell that switches the climber
 	private static final BooleanCell climb = new BooleanCell(false);
     
 	public static void setup() throws ExtendedMotorFailureException {
 		
 		// Make a FloatOutput that controls the climber speed
-		FloatOutput climberMotor = PowerManager.managePower(6, climberTEMleft.simpleControl().combine(climberTEMright.simpleControl().negate()).addRamping(.02f, FRC.constantPeriodic));
+		FloatOutput climberMotor = PowerManager.managePower(6, TEMotors.climberTEMleft.simpleControl().combine(TEMotors.climberTEMright.simpleControl().negate()).addRamping(.02f, FRC.constantPeriodic));
 		
 		// Set the speed to zero when enabling 
 		climb.setWhen(false, FRC.startDisabled.or(FRC.startTele).or(FRC.startAuto).or(FRC.startTest));
