@@ -5,6 +5,8 @@ import ccre.cluck.Cluck;
 import ccre.ctrl.*;
 import ccre.drivers.ctre.talon.TalonExtendedMotor;
 import ccre.frc.FRC;
+import ccre.log.Logger;
+import ccre.time.Time;
 
 public class Shooter {
 	public static final TalonExtendedMotor flywheelLeft = FRC.talonCAN(9);
@@ -15,9 +17,17 @@ public class Shooter {
 	public static final TalonExtendedMotor shooterFunnelingRollerLeft = FRC.talonCAN(10);
 	public static final TalonExtendedMotor shooterFunnelingRollerRight = FRC.talonCAN(12);
 
-
+	public static final FloatCell sinTime = new FloatCell();
 
 	public static void setup() throws ExtendedMotorFailureException {
+		long currentTime = System.currentTimeMillis();
+		
+		FloatInput funnelingReverseAmount = Robot.mainTuning.getFloat("Funneling Reverse Amount", .8f);
+		FloatInput funnelingFreq = Robot.mainTuning.getFloat("Funneling Frequency", 1000f);
+		
+		FRC.constantPeriodic.send(() -> {
+			sinTime.set((-1.0f/funnelingReverseAmount.get())*(float) Math.pow(Math.sin(((float) (System.currentTimeMillis() - currentTime)) / funnelingFreq.get()),2)+1.0f);
+		});
 
 		// State machine for setting various motor speeds and the target flywheel velocity
 		StateMachine shooterStates = new StateMachine(0,
@@ -36,13 +46,11 @@ public class Shooter {
 				flywheelShootingVelocity, // firing
 				flywheelCompensateVelocity); // compensate
 
-		// Set the speed of the intake
-		FloatInput intakeShootingSpeed = Robot.mainTuning.getFloat("Shooter Intake Speed", 1f);
 
 		FloatInput intakeSpeed = shooterStates.selectByState(
 				FloatInput.zero, // passive
 				FloatInput.zero, // spinup
-				intakeShootingSpeed, // firing
+				FloatInput.always(1f), // firing
 				FloatInput.zero); // compensate
 
 		// Set the target velocity of the belt
@@ -82,8 +90,8 @@ public class Shooter {
 		//flywheelTalon.velocity.atMost(shooterSlowThreshold).onPress().and(shooterStates.getIsState("firing")).send(shooterStates.getStateSetEvent("compensate"));
 		// After the flywheel velocity has been compensated, set the mode back to firing
 		//flywheelTalon.velocity.atLeast(flywheelShootingVelocity).onPress().and(shooterStates.getIsState("compensate")).send(shooterStates.getStateSetEvent("firing"));
-		shooterStates.getIsState("firing").onPress().send(Intake.intake.eventSet(true));
-		shooterStates.getIsState("passive").onPress().send(Intake.intake.eventSet(false));
+		shooterStates.onExitState("passive").send(Intake.intake.eventSet(true));
+		shooterStates.onEnterState("passive").send(Intake.intake.eventSet(false));
 		
 		ControlBindings.fireButton.onRelease().send(shooterStates.getStateSetEvent("passive"));
 		// Reset the state machine when switching modes
@@ -93,11 +101,10 @@ public class Shooter {
 		FloatInput shooterFrontConveyorConstant = Robot.mainTuning.getFloat("Shooter Front Conveyor Constant", .5f);
 		FloatInput shooterFunnelingRollerConstant = Robot.mainTuning.getFloat("Shooter Funneling Roller Constant", 1f);
 		
-		FloatOutput shooterFunnelingRoller = PowerManager.managePower(3, shooterFunnelingRollerLeft.simpleControl().combine(shooterFunnelingRollerRight.simpleControl().negate()));
 		
 		intakeSpeed.multipliedBy(shooterFrontConveyorConstant).send(shooterFrontConveyor.simpleControl().addRamping(.02f, FRC.constantPeriodic));
 		intakeSpeed.multipliedBy(shooterFunnelingRollerConstant).send(shooterFunnelingRollerLeft.simpleControl().addRamping(.02f, FRC.constantPeriodic));
-		intakeSpeed.multipliedBy((float) (Math.pow(Math.sin(System.currentTimeMillis()/1000), 2))).send(shooterFunnelingRollerRight.simpleControl());
+		intakeSpeed.multipliedBy(sinTime).multipliedBy(shooterFunnelingRollerConstant).send(shooterFunnelingRollerRight.simpleControl());
 
 		
 		// Publish the velocity of the PIDs and the intake speed.
