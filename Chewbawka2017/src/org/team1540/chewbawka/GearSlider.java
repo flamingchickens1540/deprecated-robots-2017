@@ -25,9 +25,10 @@ public class GearSlider {
 	public static void setup() throws ExtendedMotorFailureException {
 		
 		BooleanCell depositingGear = new BooleanCell();
-		ControlBindings.gearServoButton.onPress(() -> depositingGear.invert());
+		ControlBindings.gearServoButton.onPress(depositingGear.eventToggle());
 		depositingGear.onPress(() -> {servoLeft.set(0); servoRight.set(120);});
 		depositingGear.onRelease(() -> {servoLeft.set(120); servoLeft.set(0);});
+		// TODO: add 3rd servo position
 		
 		StateMachine gearSliderStates = new StateMachine(0,
 				"not calibrated",
