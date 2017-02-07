@@ -7,6 +7,7 @@ import ccre.ctrl.ExtendedMotorFailureException;
 import ccre.ctrl.binding.ControlBindingCreator;
 import ccre.frc.FRC;
 import ccre.frc.FRCApplication;
+import ccre.tuning.TuningContext;
 
 /**
  * This is the core class of a CCRE project. The CCRE launching system will make
@@ -19,6 +20,7 @@ import ccre.frc.FRCApplication;
 public class Robot implements FRCApplication {
 	
 	public static final ControlBindingCreator controlBinding = FRC.controlBinding();
+	public static final TuningContext mainTuning = new TuningContext("MainTuning").publishSavingEvent();
 	
     /**
      * This is where you specify your team number. It is used to find your
