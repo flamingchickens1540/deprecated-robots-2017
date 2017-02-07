@@ -5,6 +5,7 @@ import ccre.channel.EventInput;
 import ccre.channel.FloatCell;
 import ccre.channel.FloatInput;
 import ccre.channel.FloatOutput;
+import ccre.cluck.Cluck;
 import ccre.ctrl.ExtendedMotor.OutputControlMode;
 import ccre.ctrl.ExtendedMotorFailureException;
 import ccre.ctrl.StateMachine;
@@ -73,7 +74,7 @@ public class Shooter {
 		
 		// funneling roller left
 		FloatInput funnelingRollerLeftOutput = Robot.mainTuning.getFloat("Shooter Output Funneling Roller Left", 0.7f);
-		FloatOutput rollerLeft = funnelingRollerMotorLeft.simpleControl();
+		FloatOutput rollerLeft = funnelingRollerMotorLeft.simpleControl().negate();
 		rollerLeft.setWhen(funnelingRollerLeftOutput, shooterStates.onEnterState("firing"));
 		rollerLeft.setWhen(0f, shooterStates.onEnterState("inactive"));
 		
@@ -84,7 +85,7 @@ public class Shooter {
 		rollerRight.setWhen(0f, shooterStates.onEnterState("inactive"));
 		
 		// publishing
-		
+		Cluck.publish("Shooter Flywheel Velocity", flywheelVelocity);
 		
 	}
 	
