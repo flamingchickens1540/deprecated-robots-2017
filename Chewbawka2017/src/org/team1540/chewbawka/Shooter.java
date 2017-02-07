@@ -1,7 +1,8 @@
 package org.team1540.chewbawka;
 
-import ccre.channel.BooleanCell;
 import ccre.channel.BooleanInput;
+import ccre.channel.EventInput;
+import ccre.channel.FloatCell;
 import ccre.channel.FloatInput;
 import ccre.channel.FloatOutput;
 import ccre.ctrl.ExtendedMotor.OutputControlMode;
@@ -21,12 +22,6 @@ public class Shooter {
 	
 	public static void setup() throws ExtendedMotorFailureException {
 		
-		// set all motors to 0
-		FloatOutput allShooterMotors = flywheelMotorLeft.simpleControl().combine(flywheelMotorRight.simpleControl()).combine(
-				beltMotor.simpleControl()).combine(frontConveyerMotor.simpleControl()).combine(
-				funnelingRollerMotorLeft.simpleControl()).combine(funnelingRollerMotorRight.simpleControl());
-		allShooterMotors.setWhen(0f, FRC.startTele.or(FRC.startAuto).or(FRC.startTest).or(FRC.startDisabled));
-		
 		// flywheel
 		flywheelMotorRight.modGeneralConfig().configureReversed(false, false);
 		flywheelMotorRight.modGeneralConfig().activateFollowerMode(flywheelMotorLeft);
@@ -34,7 +29,6 @@ public class Shooter {
 		flywheelMotorLeft.modGeneralConfig().configureMaximumOutputVoltage(12f, -12f);
 		FloatOutput flywheelSpeedControl = flywheelMotorLeft.asMode(OutputControlMode.SPEED_FIXED);
 		FloatInput flywheelVelocity = flywheelMotorLeft.modEncoder().getEncoderVelocity();
-		
 		FloatInput flywheelTargetSpeed = Robot.mainTuning.getFloat("Shooter Flywheel Target Speed", 2400f);
 		BooleanInput flywheelUpToSpeed = flywheelVelocity.atLeast(flywheelTargetSpeed);
 		
@@ -43,6 +37,15 @@ public class Shooter {
 				"spinup",
 				"firing");
 		
+		// at start
+		EventInput start = FRC.startTele.or(FRC.startAuto).or(FRC.startTest).or(FRC.startDisabled);
+		FloatOutput allShooterMotors = flywheelMotorLeft.simpleControl().combine(flywheelMotorRight.simpleControl()).combine(
+				beltMotor.simpleControl()).combine(frontConveyerMotor.simpleControl()).combine(
+				funnelingRollerMotorLeft.simpleControl()).combine(funnelingRollerMotorRight.simpleControl());
+		allShooterMotors.setWhen(0f, start);
+		Intake.runIntakeShooting.setWhen(false, start);
+		shooterStates.setStateWhen("inactive", start);
+		
 		// switching states
 		shooterStates.setStateWhen("spinup", ControlBindings.spinupButton.onPress());
 		shooterStates.setStateWhen("firing", ControlBindings.fireButton.onPress().and(flywheelUpToSpeed));
@@ -50,14 +53,38 @@ public class Shooter {
 		
 		// flywheel
 		flywheelSpeedControl.setWhen(flywheelTargetSpeed, shooterStates.onEnterState("spinup"));
-		flywheelSpeedControl.setWhen(0f, shooterStates.onExitState("firing"));
+		flywheelSpeedControl.setWhen(0f, shooterStates.onEnterState("inactive"));
 		
-		// hopper motors
-		FloatOutput hopperMotors = beltMotor.simpleControl().combine(frontConveyerMotor.simpleControl());
-		hopperMotors.setWhen(1f, shooterStates.onEnterState("firing"));
-		hopperMotors.setWhen(0f, shooterStates.onExitState("firing"));
+		// belt
+		FloatInput beltOutput = Robot.mainTuning.getFloat("Shooter Output Belt", 0.5f);
+		FloatOutput belt = beltMotor.simpleControl();
+		belt.setWhen(beltOutput, shooterStates.onEnterState("firing"));
+		belt.setWhen(0f, shooterStates.onEnterState("inactive"));
+		
+		// front conveyer
+		FloatInput frontConveyerOutput = Robot.mainTuning.getFloat("Shooter Output Front Conveyer", 0.5f);
+		FloatOutput frontConveyer = beltMotor.simpleControl();
+		belt.setWhen(frontConveyerOutput, shooterStates.onEnterState("firing"));
+		belt.setWhen(0f, shooterStates.onEnterState("inactive"));
+		
+		// intake
 		Intake.runIntakeShooting.setWhen(true, shooterStates.onEnterState("firing"));
-		Intake.runIntakeShooting.setWhen(false, shooterStates.onExitState("firing"));
+		Intake.runIntakeShooting.setWhen(false, shooterStates.onEnterState("inactive"));
+		
+		// funneling roller left
+		FloatInput funnelingRollerLeftOutput = Robot.mainTuning.getFloat("Shooter Output Funneling Roller Left", 0.7f);
+		FloatOutput rollerLeft = funnelingRollerMotorLeft.simpleControl();
+		rollerLeft.setWhen(funnelingRollerLeftOutput, shooterStates.onEnterState("firing"));
+		rollerLeft.setWhen(0f, shooterStates.onEnterState("inactive"));
+		
+		// funneling roller right
+		FloatInput funnelingRollerRightOutput = Robot.mainTuning.getFloat("Shooter Output Funneling Roller Right", 0.4f);
+		FloatOutput rollerRight = funnelingRollerMotorLeft.simpleControl();
+		rollerRight.setWhen(funnelingRollerRightOutput, shooterStates.onEnterState("firing"));
+		rollerRight.setWhen(0f, shooterStates.onEnterState("inactive"));
+		
+		// publishing
+		
 		
 	}
 	
