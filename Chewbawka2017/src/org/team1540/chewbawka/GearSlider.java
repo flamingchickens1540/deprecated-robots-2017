@@ -18,18 +18,21 @@ import ccre.frc.FRC;
 public class GearSlider {
 	
 	public static final TalonExtendedMotor gearSliderMotor = FRC.talonCAN(17);
-	public static final FloatOutput servoLeft = FRC.servo(4, 0, 120);
-	public static final FloatOutput servoRight = FRC.servo(5, -120, 0);
-	// servo assumptions: positive = clockwise, 0 = down
+	public static final FloatOutput servoLeft = FRC.servo(4, 0, 45);
+	public static final FloatOutput servoRight = FRC.servo(5, 0, 45);
+	// servo assumptions: positive = clockwise, 45 = up
 	
 	public static void setup() throws ExtendedMotorFailureException {
 		
+		// servos
 		BooleanCell depositingGear = new BooleanCell();
 		ControlBindings.gearServoButton.onPress(depositingGear.eventToggle());
-		depositingGear.onPress(() -> {servoLeft.set(0); servoRight.set(120);});
-		depositingGear.onRelease(() -> {servoLeft.set(120); servoLeft.set(0);});
-		// TODO: add 3rd servo position
+		depositingGear.onPress(() -> {servoLeft.set(0); servoRight.set(0);}); // open
+		depositingGear.onRelease(() -> {servoLeft.set(-45); servoLeft.set(45);}); // close
 		
+		depositingGear.setWhen(false, Robot.start);
+		
+		// slider
 		StateMachine gearSliderStates = new StateMachine(0,
 				"not calibrated",
 				"calibrating 0 end",
@@ -78,13 +81,12 @@ public class GearSlider {
 		BooleanInput sliderTooFarB = gearSliderPosition.atMost(0f);
 		sliderTooFarF.onPress(gearSliderPositionControl.eventSet(slidingDistance));
 		sliderTooFarB.onPress(gearSliderPositionControl.eventSet(0f));
-		FloatCell slidingControlScaling = new FloatCell(1f);
+		FloatInput slidingControlScaling = Robot.mainTuning.getFloat("Gear Slider Scaling", 0.5f);
 		ControlBindings.gearSliderControls.onChange().and(calibrated).send(gearSliderPositionControl.eventSet(
 				gearSliderPosition.plus(ControlBindings.gearSliderControls.multipliedBy(slidingControlScaling))));
 		
 		Cluck.publish("Gear Servo Left Output", servoLeft);
 		Cluck.publish("Gear Servo Right Output", servoRight);
-		Cluck.publish("Gear Depositing", depositingGear);
 		Cluck.publish("Gear Slider Calibrate", calibrate);
 		Cluck.publish("Gear Slider Calibrated", calibrated);
 		Cluck.publish("Gear Slider Calibrating Speed", calibratingSpeed);
@@ -92,7 +94,6 @@ public class GearSlider {
 		Cluck.publish("Gear Slider Position Control", gearSliderPositionControl);
 		Cluck.publish("Gear Slider Too Slow Threshold", slow);
 		Cluck.publish("Gear Slider Position Error", positionError);
-		Cluck.publish("Gear Slider Control Scaling", slidingControlScaling);
 		
 	}
 	

@@ -17,4 +17,7 @@ public class ControlBindings {
 	public static final BooleanInput fireButton = Robot.controlBinding.addBoolean("Shooter Fire Button");
 	public static final BooleanInput stopShootingButton = Robot.controlBinding.addBoolean("Shooter Stop Shooting Button");
 	
+	// climber
+	public static final BooleanInput climberButton = Robot.controlBinding.addBoolean("Climber Button");
+	
 }
