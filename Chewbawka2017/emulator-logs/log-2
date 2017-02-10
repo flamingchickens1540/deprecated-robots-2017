@@ -1,0 +1,17 @@
+Logging began at Wed Feb 08 19:10:59 PST 2017 [0]
+[11 FINE] (ConnectionReceiverThread.java:58) About to listen on 80
+[11 FINE] (ConnectionReceiverThread.java:58) About to listen on 1540
+[16 WARNING] (ConnectionReceiverThread.java:64) Failed to bind to port 80.
+[511 INFO] (DeviceListMain.java:70) Starting application: org.team1540.chewbawka.Robot
+[544 INFO] (StorageSegment.java:98) No data file for: MainTuning - assuming empty.
+[572 INFO] (CANTalonDevice.java:69) Changed main sensor on 17 to Encoder
+[578 INFO] (CANTalonDevice.java:69) Changed main sensor on 6 to Encoder
+[579 INFO] (CANTalonDevice.java:69) Changed main sensor on 2 to Encoder
+[579 INFO] (CANTalonDevice.java:69) Changed main sensor on 5 to Encoder
+[602 INFO] (CANTalonDevice.java:69) Changed main sensor on 9 to Encoder
+[602 INFO] (CANTalonDevice.java:249) CAN Talon SRX 9: Encoder Codes per Revolution: 1875.0
+[605 INFO] (DeviceListMain.java:73) Hello, org.team1540.chewbawka.Robot!
+Logging continues at Wed Feb 08 19:11:09 PST 2017
+Logging continues at Wed Feb 08 19:11:19 PST 2017
+Logging continues at Wed Feb 08 19:11:29 PST 2017
+Logging continues at Wed Feb 08 19:11:39 PST 2017

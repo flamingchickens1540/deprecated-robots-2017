@@ -2,16 +2,30 @@ package org.team1540.chewbawka;
 
 import ccre.channel.FloatInput;
 import ccre.channel.FloatOutput;
-import ccre.cluck.Cluck;
 import ccre.ctrl.ExtendedMotorFailureException;
 import ccre.drivers.ctre.talon.TalonExtendedMotor;
 import ccre.frc.FRC;
 import ccre.log.LogLevel;
 import ccre.log.Logger;
-import ccre.rconf.RConf.Entry;
-import ccre.rconf.RConfable;
 
 public class SelfTest {
+	
+	public static void testAllMotors() throws ExtendedMotorFailureException, InterruptedException {
+		
+		// climber
+		testMotor(Talons.climberMotor1, "Climber Motor 1", 2, false);
+		testMotor(Talons.climberMotor2, "Climber Motor 2", 0, false);
+		
+		// intake
+		testMotor(Talons.intakeMotor, "Intake Motor", 6, false);
+		
+		// shooter
+		
+		// gear slider
+		testMotor(Talons.gearSliderMotor, "Gear Slider Motor", 11, true);
+		// servos
+		
+	}
 	
 	public static void testMotor(TalonExtendedMotor talon, String name, int PDPchannel, boolean hasEncoder) throws ExtendedMotorFailureException, InterruptedException {
 		FloatOutput motor = talon.simpleControl();

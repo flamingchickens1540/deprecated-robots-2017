@@ -30,13 +30,13 @@ public class Robot implements FRCApplication {
     
     @Override
     public void setupRobot() throws ExtendedMotorFailureException {
-        Climber.setup();
-        DriveTrain.setup();
-        GearSlider.setup();
+//        Climber.setup();
+//        DriveTrain.setup();
+//        GearSlider.setup();
         Intake.setup();
         Shooter.setup();
 //        Testing.setup();
-        Autonomous.setup();
+//        Autonomous.setup();
 //    	FRC.talonCAN(1).enable();
 //    	FRC.talonCAN(2).enable();
 //    	FRC.talonCAN(3).enable();

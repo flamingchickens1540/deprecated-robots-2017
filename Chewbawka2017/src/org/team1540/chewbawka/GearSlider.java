@@ -12,23 +12,17 @@ import ccre.cluck.Cluck;
 import ccre.ctrl.ExtendedMotor.OutputControlMode;
 import ccre.ctrl.ExtendedMotorFailureException;
 import ccre.ctrl.StateMachine;
-import ccre.drivers.ctre.talon.TalonExtendedMotor;
 import ccre.frc.FRC;
 
 public class GearSlider {
-	
-	public static final TalonExtendedMotor gearSliderMotor = FRC.talonCAN(17);
-	public static final FloatOutput servoLeft = FRC.servo(4, 0, 45);
-	public static final FloatOutput servoRight = FRC.servo(5, 0, 45);
-	// servo assumptions: positive = clockwise, 45 = up
 	
 	public static void setup() throws ExtendedMotorFailureException {
 		
 		// servos
 		BooleanCell depositingGear = new BooleanCell();
 		ControlBindings.gearServoButton.onPress(depositingGear.eventToggle());
-		depositingGear.onPress(() -> {servoLeft.set(0); servoRight.set(0);}); // open
-		depositingGear.onRelease(() -> {servoLeft.set(-45); servoLeft.set(45);}); // close
+		depositingGear.onPress(() -> {Talons.servoLeft.set(0); Talons.servoRight.set(0);}); // open
+		depositingGear.onRelease(() -> {Talons.servoLeft.set(-45); Talons.servoLeft.set(45);}); // close
 		
 		depositingGear.setWhen(false, Robot.start);
 		
@@ -40,13 +34,13 @@ public class GearSlider {
 				"returning to center",
 				"calibrated");
 		
-		gearSliderMotor.modEncoder().configureEncoderCodesPerRev(125 * 15);
-		gearSliderMotor.modGeneralConfig().configureMaximumOutputVoltage(12f, -12f);
+		Talons.gearSliderMotor.modEncoder().configureEncoderCodesPerRev(125 * 15);
+		Talons.gearSliderMotor.modGeneralConfig().configureMaximumOutputVoltage(12f, -12f);
 		FloatCell calibratingSpeed = new FloatCell();
-		FloatOutput gearSliderSpeedControl = gearSliderMotor.asMode(OutputControlMode.SPEED_FIXED);
-		FloatOutput gearSliderPositionControl = gearSliderMotor.asMode(OutputControlMode.POSITION_FIXED);
-		FloatIO gearSliderPosition = gearSliderMotor.modEncoder().getEncoderPosition();
-		FloatInput gearSliderVelocity = gearSliderMotor.modEncoder().getEncoderVelocity();
+		FloatOutput gearSliderSpeedControl = Talons.gearSliderMotor.asMode(OutputControlMode.SPEED_FIXED);
+		FloatOutput gearSliderPositionControl = Talons.gearSliderMotor.asMode(OutputControlMode.POSITION_FIXED);
+		FloatIO gearSliderPosition = Talons.gearSliderMotor.modEncoder().getEncoderPosition();
+		FloatInput gearSliderVelocity = Talons.gearSliderMotor.modEncoder().getEncoderVelocity();
 		
 		FloatCell calibrationSpeed = new FloatCell(10f);
 		FloatCell slow = new FloatCell(2f);
@@ -85,8 +79,8 @@ public class GearSlider {
 		ControlBindings.gearSliderControls.onChange().and(calibrated).send(gearSliderPositionControl.eventSet(
 				gearSliderPosition.plus(ControlBindings.gearSliderControls.multipliedBy(slidingControlScaling))));
 		
-		Cluck.publish("Gear Servo Left Output", servoLeft);
-		Cluck.publish("Gear Servo Right Output", servoRight);
+		Cluck.publish("Gear Servo Left Output", Talons.servoLeft);
+		Cluck.publish("Gear Servo Right Output", Talons.servoRight);
 		Cluck.publish("Gear Slider Calibrate", calibrate);
 		Cluck.publish("Gear Slider Calibrated", calibrated);
 		Cluck.publish("Gear Slider Calibrating Speed", calibratingSpeed);
